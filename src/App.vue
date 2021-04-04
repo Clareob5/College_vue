@@ -1,28 +1,52 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <MyNavBar :loggedIn="this.loggedIn" v-on:login="setLoggedIn" v-on:logout="setLoggedOut" />
+    <b-container>
+      <b-row>
+          <router-view :loggedIn="this.loggedIn" v-on:login="setLoggedIn" v-on:logout="setLoggedOut" />
+      </b-row>
+  </b-container>
+
+
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import MyNavBar from './components/MyNavBar.vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    MyNavBar
+  },
+  data() {
+    return {
+      loggedIn: false
+    }
+  },
+  created() {
+    if (localStorage.getItem('token')) {
+      this.loggedIn = true;
+      console.log("APP: ",this.loggedIn);
+    }
+    else {
+      this.loggedIn = false;
+    }
+  },
+  methods: {
+    setLoggedIn() {
+      this.loggedIn = true;
+            // optionally, you could store the token in localStorage here
+    },
+    setLoggedOut() {
+      this.loggedIn = false;
+            // optionally, you could trigger the whole logout process here
+    }
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+
 </style>
