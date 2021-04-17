@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
 import Home from './views/Home'
 import Login from './views/Auth/Login'
 import Register from './views/Auth/Register'
@@ -8,6 +7,14 @@ import CoursesIndex from './views/courses/Index'
 import CoursesShow from './views/courses/Show'
 import CoursesEdit from './views/courses/Edit'
 import CoursesCreate from './views/courses/Create'
+import EnrolmentsIndex from './views/enrolments/Index'
+import EnrolmentsShow from './views/enrolments/Show'
+import EnrolmentsEdit from './views/enrolments/Edit'
+import EnrolmentsCreate from './views/enrolments/Create'
+import LecturersIndex from './views/lecturers/Index'
+import LecturersShow from './views/lecturers/Show'
+import LecturersEdit from './views/lecturers/Edit'
+import LecturersCreate from './views/lecturers/Create'
 
 Vue.use(Router)
 
@@ -18,7 +25,10 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      children: [
+
+      ]
     },
 
     {
@@ -53,6 +63,50 @@ export default new Router({
       path: '/courses/:id/edit',
       name: 'courses_edit',
       component: CoursesEdit
+    },
+
+    {
+      path: '/enrolments',
+      name: 'enrolments_index',
+      component: EnrolmentsIndex
+    },
+    {
+      path: '/enrolments/create',
+      name: 'enrolments_create',
+      component: EnrolmentsCreate
+    },
+    {
+      path: '/enrolments/:id',
+      name: 'enrolments_show',
+      component: EnrolmentsShow
+    },
+    //
+    {
+      path: '/enrolments/:id/edit',
+      name: 'enrolments_edit',
+      component: EnrolmentsEdit
+    },
+
+    {
+      path: '/lecturers',
+      name: 'lecturers_index',
+      component: LecturersIndex
+    },
+    {
+      path: '/lecturers/create',
+      name: 'lecturers_create',
+      component: LecturersCreate
+    },
+    {
+      path: '/lecturers/:id',
+      name: 'lecturers_show',
+      component: LecturersShow
+    },
+    //
+    {
+      path: '/lecturers/:id/edit',
+      name: 'lecturers_edit',
+      component: LecturersEdit
     },
   ]
   });

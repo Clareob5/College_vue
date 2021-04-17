@@ -1,21 +1,20 @@
 <template>
 <div id='nav'>
-  <b-navbar type="dark" variant="dark">
-    <b-navbar-nav>
+  <b-navbar>
+    <b-navbar-nav v-if="loggedIn">
       <b-nav-item to="/">Home</b-nav-item>
       <b-nav-item :to="{ name: 'courses_index'}">Courses</b-nav-item>
-      <b-nav-item to="/">Lecturers</b-nav-item>
-      <b-nav-item to="/">Enrolements</b-nav-item>
+      <b-nav-item :to="{ name: 'lecturers_index' }">Lecturers</b-nav-item>
+      <b-nav-item to="/enrolments">Enrolments</b-nav-item>
+      <v-spacer></v-spacer>
+      <button class="logout" @click="logout()">Logout</button>
+     </b-navbar-nav>
+
+    <!-- <b-navbar-nav v-else>
       <b-nav-item :to="{ name: 'login' }">Login</b-nav-item>
       <b-nav-item :to="{ name: 'register' }">Sign up</b-nav-item>
-
-    </b-navbar-nav>
+    </b-navbar-nav> -->
   </b-navbar>
-
-  <!-- <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> -->
-
-  <!-- <router-link :to="{ name: 'testing', params: { id: 123 }}">Testing</router-link> -->
 </div>
 </template>
 
@@ -30,11 +29,46 @@ export default {
   components: {
 
   },
+  data() {
+    return {
+      menu: [{
+          icon: 'home',
+          title: 'Home',
+          link: '/'
+        },
+        {
+          icon: 'info',
+          title: 'Courses',
+          link: '/courses'
+        },
+        {
+          icon: 'warning',
+          title: 'Enrolements',
+          link: '/enrolments'
+        },
+        {
+          icon: 'warning',
+          title: 'Lecturers',
+          link: '/lecturers'
+        },
+        {
+          icon: 'warning',
+          title: 'Login',
+          link: '/auth/login'
+        },
+        {
+          icon: 'warning',
+          title: 'Register',
+          link: '/auth/register'
+        }
+      ]
+    }
+  },
   methods: {
     logout() {
       localStorage.removeItem('token'); // optionally, can now move this to App.vue's logout method
       this.$emit('logout'); //<-- tells App.vue to update loggedIn
-      this.$router.push('/');
+      this.$router.push('/login');
     }
   }
 }
@@ -42,8 +76,9 @@ export default {
 
 <style>
 #nav {
-  padding: 30px;
+  padding: 5px;
   text-align: center;
+  background-color: purple;
 }
 
 #nav a {
@@ -52,6 +87,10 @@ export default {
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: #111111;
+}
+
+.logout {
+  color: #eee;
 }
 </style>

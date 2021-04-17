@@ -1,14 +1,35 @@
 <template>
-  <div>
+  <div class="container">
+    <b-form class="col-md-10">
+      <div class="row">
+        <b-form-group label="Title:" class="col-md-5">
+          <b-form-input v-model="form.title" placeholder="Enter title" required></b-form-input>
+          <p class="error" v-if="errors.title">{{ errors.title[0] }}</p>
+        </b-form-group>
+        <b-form-group label="Course Code:" class="col-md-5">
+          <b-form-input v-model="form.code" placeholder="Enter code" required></b-form-input>
+          <p class="error" v-if="errors.code">{{ errors.code[0] }}</p>
+        </b-form-group>
+      </div>
+      <div class="row">
+        <b-form-group label="Description:" class="col-md-10">
+          <b-form-textarea v-model="form.description" placeholder="Enter Description" required></b-form-textarea>
+          <p class="error" v-if="errors.description">{{ errors.description[0] }}</p>
+        </b-form-group>
+      </div>
+      <div class="row">
+        <b-form-group label="Points:" description="Points must be 100 or above" class="col-md-5">
+          <b-form-input v-model="form.points" placeholder="Enter Points" required></b-form-input>
+          <p class="error" v-if="errors.points">{{ errors.points[0] }}</p>
+        </b-form-group>
+        <b-form-group label="Level:" description="Enter a level between 7 and 10" class="col-md-5">
+          <b-form-input v-model="form.level"  placeholder="Enter Level" required></b-form-input>
+          <p class="error" v-if="errors.level">{{ errors.level[0] }}</p>
+        </b-form-group>
 
-    title: <input type="text" v-model="form.title" /> <br>
-    code: <input type="text" v-model="form.code" /> <span v-if="errors.code"> {{ errors.code }} </span><br>
-    description: <input type="text" v-model="form.description" /> <br>
-    points: <input type="text" v-model="form.points" /> <span v-if="errors.points"> {{ errors.points }} </span><br>
-    level: <input type="text" v-model="form.level" /> <span v-if="errors.level"> {{ errors.level }} </span><br>
-
-    <button @click="editCourse()">Submit</button>
-
+      </div>
+      <a class="btn btn-success" @click="editCourse()">Submit</a>
+    </b-form>
 
   </div>
 </template>

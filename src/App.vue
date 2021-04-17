@@ -1,15 +1,12 @@
 <template>
-  <div>
+  <v-app class="grey lighten-4"  id="app">
     <MyNavBar :loggedIn="this.loggedIn" v-on:login="setLoggedIn" v-on:logout="setLoggedOut" />
-    <b-container>
-      <b-row>
+    <v-container>
+      <v-row>
           <router-view :loggedIn="this.loggedIn" v-on:login="setLoggedIn" v-on:logout="setLoggedOut" />
-      </b-row>
-  </b-container>
-
-
-
-  </div>
+      </v-row>
+  </v-container>
+  </v-app>
 </template>
 
 <script>

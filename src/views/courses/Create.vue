@@ -1,5 +1,44 @@
 <template>
-<div class="container">
+  <v-container align-center cols="12" md="8">
+  <v-card cols="10" md="10">
+      <v-card-title>Create a Course</v-card-title>
+<v-form>
+  <v-container>
+
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.title" :counter="30" label="Title" required></v-text-field><p v-if="errors.title">{{ errors.title[0] }}</p>
+
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.code" label="Code" :counter="5" required></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="10">
+        <v-textarea v-model="form.description" color="purple">
+          <template v-slot:label>
+            <div>
+              Description
+            </div>
+          </template>
+        </v-textarea>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.points" :counter="3" label="Points" required></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.level" label="Level" required></v-text-field>
+      </v-col>
+    </v-row>
+    <v-btn black--text color="blue darken-3"><a @click="createCourse()">Submit</a></v-btn>
+  </v-container>
+</v-form>
+</v-card>
+</v-container>
+<!-- <div class="container">
   <b-form class="col-md-10">
     <div class="row">
       <b-form-group label="Title:" class="col-md-5">
@@ -27,11 +66,9 @@
         <p class="error" v-if="errors.level">{{ errors.level[0] }}</p>
       </b-form-group>
 
-    </div>
-    <a class="btn btn-success" @click="createCourse()">Submit</a>
-  </b-form>
+    </div> -->
 
-</div>
+<!-- </b-form> -->
 </template>
 
 <script>
