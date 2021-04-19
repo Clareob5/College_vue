@@ -1,15 +1,37 @@
 <template>
 <div class="container">
+  <v-col cols="12" sm="8" md="10">
+    <v-card container>
+      <v-card-title class="blue lighten-5 mb-2">
+        <h2 class="font-weight-light">Enrolment Information</h2>
+      </v-card-title>
+      <v-card-text cols="12" sm="6" md="6">
+        <h5 class="font-weight-regular text--primary">Date of Enrolment: </h5>
+        <p>{{ enrolment.date }}</p>
+        <h5 class="font-weight-regular text--primary">Time of Enrolment: </h5>
+        <p>{{ enrolment.time }}</p>
+        <h5 class="font-weight-regular text--primary">Status of Enrolment: </h5>
+        <p>{{ enrolment.status }}</p>
+        <h5 class="font-weight-regular text--primary">Course: </h5>
+        <p>{{ enrolment.course.title }}</p>
+        <h5 class="font-weight-regular text--primary">Lecturer: </h5>
+        <p>{{ enrolment.lecturer.name }}</p>
+      </v-card-text>
 
-  <h4>Date: </h4> {{ enrolment.date }} <br>
-  <h4>Time: </h4> {{ enrolment.time }}<br>
-  <h4>Status: </h4> {{ enrolment.status }}<br>
-  <h4>Course: </h4> {{ course.title }}<br>
-  <h4>Lecturer: </h4> {{ lecturer.name }}<br>
 
-
-  <router-link :to="{ name: 'enrolments_edit', params: { id: enrolment.id }}">Edit</router-link>
-  <b-button>Back</b-button>
+      <v-btn icon plain color="orange darken-3" :to="{ name: 'enrolments_edit', params: { id: enrolment.id }}"><span class="material-icons" color="orange">
+          edit
+        </span></v-btn>
+      <v-btn icon plain color="red darken-2" @click="deleteEnrolment(enrolment)"><span class="material-icons">
+          delete
+        </span></v-btn>
+      <v-btn plain>
+        <router-link :to="{ name: 'enrolments_index' }">
+          Back
+        </router-link>
+      </v-btn>
+    </v-card>
+  </v-col>
 </div>
 </template>
 
@@ -34,7 +56,7 @@ export default {
   mounted() {
     let token = localStorage.getItem('token');
 
-    axios.get(`http://college.api:8000/api/enrolments/${this.$route.params.id}`, {
+    axios.get(`https://college-api-cob.herokuapp.com/api/enrolments/${this.$route.params.id}`, {
       headers: { Authorization: "Bearer " + token}
     })
     .then(response => {
@@ -57,7 +79,7 @@ export default {
       let token = localStorage.getItem('token');
       console.log(enrole.course_id);
 
-      axios.get(`http://college.api:8000/api/courses/${this.enrolment.course_id}`, {
+      axios.get(`https://college-api-cob.herokuapp.com/api/courses/${this.enrolment.course_id}`, {
           headers: {
             Authorization: "Bearer " + token
           }
@@ -74,7 +96,7 @@ export default {
     getLecturer(enrole) {
       let token = localStorage.getItem('token');
       console.log(enrole.lecturer_id);
-      axios.get(`http://college.api:8000/api/lecturers/${this.enrolment.lecturer_id}`, {
+      axios.get(`https://college-api-cob.herokuapp.com/api/lecturers/${this.enrolment.lecturer_id}`, {
           headers: {
             Authorization: "Bearer " + token
           }

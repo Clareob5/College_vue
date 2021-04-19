@@ -1,5 +1,5 @@
 <template>
-  <v-app class="grey lighten-4"  id="app">
+  <v-app id="app">
     <MyNavBar :loggedIn="this.loggedIn" v-on:login="setLoggedIn" v-on:logout="setLoggedOut" />
     <v-container>
       <v-row>

@@ -1,9 +1,10 @@
 <template>
+  <v-layout>
   <v-col cols="12" sm="8" md="10">
-    <div> <h2>List of Lectuers</h2> </div>
+    <div class="mb-8 mt-8" align-center> <h2 class="font-weight-light">List of Lecturers</h2> <hr></div>
   <v-card>
     <v-card-title>
-    <v-btn color="blue accent-2"
+    <v-btn color="blue accent-4"
             dark
             class="mb-2" >
 
@@ -24,7 +25,7 @@
   :items="lecturers"
   :search="search"
   :items-per-page="10"
-  loading
+  loading="loadTable"
   loading-text="Loading... Please wait"
   class="elevation-1"
 >
@@ -32,9 +33,41 @@
   <v-btn icon plain color="orange darken-3" :to="{ name: 'lecturers_edit', params: { id: item.id }}"><span class="material-icons" color="orange">
       edit
     </span></v-btn>
-  <v-btn icon plain color="red darken-2" @click="deleteLecturer(item)"><span class="material-icons">
-delete
-</span></v-btn>
+   <v-dialog
+     v-model="deleteDialog"
+     persistent
+     max-width="290"
+     :retain-focus="false"
+   >
+     <template v-slot:activator="{ on, attrs }">
+       <v-btn icon plain  v-bind="attrs"
+        v-on="on" color="red darken-2" @click="deleteDialog"><span class="material-icons">delete</span>
+       </v-btn>
+     </template>
+     <v-card>
+       <v-card-title class="headline">
+         Are you sure you wish to delete this Lecturer
+       </v-card-title>
+       <v-card-text>This Lecturer may have enrolments, these will be deleted if you delete the lecturer</v-card-text>
+       <v-card-actions>
+         <v-spacer></v-spacer>
+         <v-btn
+           color="red darken-1"
+           text
+           @click="deleteDialog = false"
+         >
+          cancel
+         </v-btn>
+         <v-btn
+           color="red darken-1"
+           text
+           @click="deleteLecturer(item)"
+         >
+           confirm
+         </v-btn>
+       </v-card-actions>
+     </v-card>
+   </v-dialog>
   <v-btn icon plain>
     <router-link :to="{ name: 'lecturers_show', params: { id: item.id }}"><span class="material-icons" color="blue">
         visibility
@@ -45,6 +78,8 @@ delete
         </v-data-table>
       </v-card>
     </v-col>
+
+</v-layout>
 </template>
 
 <script>
@@ -57,6 +92,7 @@ export default {
   },
   data() {
     return {
+      loadTable: true,
       lecturers: [],
       headers: [{
           text: 'Name',
@@ -90,18 +126,18 @@ export default {
       ],
 
       enrolments: [],
-        search: "",
-      // filteredLecturers: [],
+      search: "",
+      deleteDialog: false,
     }
   },
-  watch: {
-    term: function() {
-    this.searchLecturer();
-    }
-  },
+  // watch: {
+  //   term: function() {
+  //   this.searchLecturer();
+  //   }
+  //},
   mounted() {
     this.getLecturers();
-    this.getEnrolments();
+    //this.getEnrolments();
   },
   methods: {
       getLecturers() {
@@ -109,7 +145,7 @@ export default {
 
       //console.log(token);
 
-      axios.get('http://college.api:8000/api/lecturers', {
+      axios.get('https://college-api-cob.herokuapp.com/api/lecturers', {
           headers: {
             Authorization: "Bearer " + token
           }
@@ -117,37 +153,38 @@ export default {
         .then(response => {
           console.log(response.data.data);
           this.lecturers = response.data.data;
-          this.filteredLecturers = this.lecturers;
+          this.loadTable= false;
         })
         .catch(error => {
           console.log(error)
           console.log(error.response.data)
         })
     },
-    getEnrolments() {
+    getEnrolments(lecturer) {
       let token = localStorage.getItem('token');
 
       //console.log(token);
 
-      axios.get('http://college.api:8000/api/enrolments', {
+      this.listOfEnrolments = lecturer.enrolments.map((current) => axios.get('https://college-api-cob.herokuapp.com/api/enrolments/' + current.id, {
           headers: {
             Authorization: "Bearer " + token
           }
-        })
-        .then(response => {
-          console.log(response.data.data);
-          this.enrolments = response.data.data;
-        })
-        .catch(error => {
-          console.log(error)
-          console.log(error.response.data)
-        })
+        }));
+
+         let numOfEnrolments = this.listOfEnrolments.length;
+        console.log(numOfEnrolments);
+        if (numOfEnrolments > 0){
+          this.enrolements = true;
+        }else{
+          this.enrolements = false;
+        }
     },
     deleteLecturer(lecturer) {
       let token = localStorage.getItem('token');
-      console.log(lecturer);
+      console.log(this.deleteDialog);
+      this.deleteDialog = false;
 
-      let listOfDeleteRequests = lecturer.enrolments.map((current) => axios.delete('http://college.api:8000/api/enrolments/' + current.id, {
+      let listOfDeleteRequests = lecturer.enrolments.map((current) => axios.delete('https://college-api-cob.herokuapp.com/api/enrolments/' + current.id, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -156,14 +193,14 @@ export default {
       axios.all(listOfDeleteRequests)
         .then(function(response) {
           console.log(response);
-          axios.delete("http://college.api:8000/api/lecturers/" + lecturer.id, {
+          axios.delete("https://college-api-cob.herokuapp.com/api/lecturers/" + lecturer.id, {
               headers: {
                 Authorization: "Bearer " + token
               }
             })
             .then(function(response) {
-              console.log(response.data);
-              this.lecturer = response.data.data;
+              console.log(response);
+
             })
             .catch(function(error) {
               console.log(error);
@@ -173,7 +210,7 @@ export default {
     logout() {
       let token = localStorage.getItem('token');
 
-      axios.get('http://college.api:8000/api/logout', {
+      axios.get('https://college-api-cob.herokuapp.com/api/logout', {
           headers: {
             Authorization: "Bearer " + token
           }

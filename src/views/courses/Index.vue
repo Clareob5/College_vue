@@ -1,9 +1,9 @@
   <template>
     <v-col cols="12" sm="8" md="10">
-      <div> <h2>List of Courses</h2> </div>
+      <div class="mb-8 mt-8" align-center> <h2 class="font-weight-light">List of Courses</h2> <hr></div>
     <v-card>
       <v-card-title>
-      <v-btn color="blue accent-2"
+      <v-btn color="blue accent-4"
               dark
               class="mb-2" >
 
@@ -23,7 +23,7 @@
     :headers="headers"
     :items="courses"
     :search="search"
-    loading
+    loading="loadTable"
     loading-text="Loading... Please wait"
     :items-per-page="10"
     class="elevation-1"
@@ -32,9 +32,41 @@
     <v-btn icon plain color="orange darken-3" :to="{ name: 'courses_edit', params: { id: item.id }}"><span class="material-icons" color="orange">
         edit
       </span></v-btn>
-    <v-btn icon plain color="red darken-2" @click="deleteCourse(item, item.id)"><span class="material-icons">
-  delete
-  </span></v-btn>
+      <v-dialog
+        v-model="deleteDialog"
+        persistent
+        max-width="290"
+        :retain-focus="false"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon plain  v-bind="attrs"
+           v-on="on" color="red darken-2" @click="deleteDialog"><span class="material-icons">delete</span>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-card-title class="headline">
+            Are you sure you wish to delete this Course
+          </v-card-title>
+          <v-card-text>This Course may have enrolments, these will be deleted if you delete the Course</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="red darken-1"
+              text
+              @click="deleteDialog = false"
+            >
+             cancel
+            </v-btn>
+            <v-btn
+              color="red darken-1"
+              text
+              @click="deleteCourse(item)"
+            >
+              confirm
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     <v-btn icon plain>
       <router-link :to="{ name: 'courses_show', params: { id: item.id }}"><span class="material-icons" color="blue">
           visibility
@@ -85,9 +117,8 @@ export default {
       //page: 5,
       lecturers: [],
       search: "",
-      // filteredCourses: [],
-      // selectedCourse: "",
-      // selectedLecturer: ""
+      loadTable: false,
+      deleteDialog: false
     }
   },
   mounted() {
@@ -108,9 +139,7 @@ export default {
     getCourses() {
       let token = localStorage.getItem('token');
 
-      //console.log(token);
-
-      axios.get('http://college.api:8000/api/courses', {
+      axios.get('https://college-api-cob.herokuapp.com/api/courses', {
           headers: {
             Authorization: "Bearer " + token
           }
@@ -118,7 +147,7 @@ export default {
         .then(response => {
           console.log(response.data.data);
           this.courses = response.data.data;
-          this.filteredCourses = this.courses;
+          this.loadTable = false;
         })
         .catch(error => {
           console.log(error)
@@ -130,7 +159,7 @@ export default {
 
       //console.log(token);
 
-      axios.get('http://college.api:8000/api/lecturers', {
+      axios.get('https://college-api-cob.herokuapp.com/api/lecturers', {
           headers: {
             Authorization: "Bearer " + token
           }
@@ -147,8 +176,9 @@ export default {
     deleteCourse(course) {
       let token = localStorage.getItem('token');
       console.log(course);
-
-      let listOfDeleteRequests = course.enrolments.map((current) => axios.delete('http://college.api:8000/api/enrolments/' + current.id, {
+      this.deleteDialog = false;
+      //let is = this;
+      let listOfDeleteRequests = course.enrolments.map((current) => axios.delete('https://college-api-cob.herokuapp.com/api/enrolments/' + current.id, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -157,57 +187,25 @@ export default {
       axios.all(listOfDeleteRequests)
         .then(function(response) {
           console.log(response);
-          axios.delete("http://college.api:8000/api/courses/" + course.id, {
+          axios.delete("https://college-api-cob.herokuapp.com/api/courses/" + course.id, {
               headers: {
                 Authorization: "Bearer " + token
               }
             })
             .then(function(response) {
               console.log(response.data);
-              //this.course = response.data.data;
-              this.$router.replace({
-                   name: "courses_index"
-               });
+
+              //is.$router.push({ name: 'courses_index' });
             })
             .catch(function(error) {
               console.log(error);
             });
         });
-      //     const course = this.courses.indexOf(id);
-      //      console.log(course);
-      //      this.courses.splice(course, 1);
-      //       //console.log(id);
-      //
-      //     axios.delete(`http://college.api:8000/api/courses/${id}`,{
-      //         headers: {
-      //           Authorization: "Bearer " + token
-      //         }
-      //
-      //       })
-      // .then(response => {
-      //   console.log(response.data);
-      //   this.$router.replace({
-      //     name: "courses_index"
-      //   })
-      // })
-      // .catch(function (error) {
-      //   console.log(error)
-      // })
-
-      // console.log(id)
-      // const course = this.courses.indexOf(id);
-      // console.log(course);
-      //
-      // localStorage.removeItem(course);
-
-      // axios.delete(`http://college.api:8000/api/courses/${id}`).then(()=>{
-      //   //this.getData;
-      // })
     },
     logout() {
       let token = localStorage.getItem('token');
 
-      axios.get('http://college.api:8000/api/logout', {
+      axios.get('https://college-api-cob.herokuapp.com/api/logout', {
           headers: {
             Authorization: "Bearer " + token
           }

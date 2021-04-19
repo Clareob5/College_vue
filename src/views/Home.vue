@@ -1,5 +1,11 @@
 <template>
-  <div id="inspire" class="login container">
+  <div>
+  <div v-if="loggedIn">
+    <v-container align-center>
+      <h1>Welcome the the College Portal</h1>
+    </v-container>
+  </div>
+  <div id="inspire" class="login container" v-else>
     <v-layout align-center justify-center>
           <v-col cols="12" sm="8" md="10">
             <v-card class="elevation-5">
@@ -37,7 +43,7 @@
                       </v-card-text>
 
                     </v-col>
-                    <v-col cols="12" md="4" class="purple">
+                    <v-col cols="12" md="4" class="purple darken-2">
                       <v-card-text class="white--text mt-12">
                         <h1 class="text-center display-1">Dont have an account?</h1>
                         <h5
@@ -52,7 +58,7 @@
                 </v-window-item>
                 <v-window-item :value="2">
                   <v-row class="fill-height">
-                    <v-col cols="12" md="4" class="purple">
+                    <v-col cols="12" md="4" class="purple darken-2">
                       <v-card-text class="white--text mt-12">
                         <h1 class="text-center display-1">Already Have an Account?</h1>
                         <h5
@@ -109,6 +115,7 @@
           </v-col>
         </v-layout>
       </div>
+    </div>
 </template>
 
 <script>
@@ -137,7 +144,7 @@ export default {
   methods:{
     login() {
       let self = this;
-     axios.post('http://college.api:8000/api/login', {
+     axios.post('https://college-api-cob.herokuapp.com/api/login', {
        email: this.form.email ,
        password: this.form.password
      })
@@ -157,7 +164,7 @@ export default {
    },
  register() {
    let self = this;
-   axios.post('http://college.api:8000/api/register', {
+   axios.post('https://college-api-cob.herokuapp.com/api/register', {
        name: this.form.name,
        email: this.form.email,
        password: this.form.password

@@ -1,37 +1,44 @@
 <template>
-  <div class="container">
-    <b-form class="col-md-10">
-      <div class="row">
-        <b-form-group label="Title:" class="col-md-5">
-          <b-form-input v-model="form.title" placeholder="Enter title" required></b-form-input>
-          <p class="error" v-if="errors.title">{{ errors.title[0] }}</p>
-        </b-form-group>
-        <b-form-group label="Course Code:" class="col-md-5">
-          <b-form-input v-model="form.code" placeholder="Enter code" required></b-form-input>
-          <p class="error" v-if="errors.code">{{ errors.code[0] }}</p>
-        </b-form-group>
-      </div>
-      <div class="row">
-        <b-form-group label="Description:" class="col-md-10">
-          <b-form-textarea v-model="form.description" placeholder="Enter Description" required></b-form-textarea>
-          <p class="error" v-if="errors.description">{{ errors.description[0] }}</p>
-        </b-form-group>
-      </div>
-      <div class="row">
-        <b-form-group label="Points:" description="Points must be 100 or above" class="col-md-5">
-          <b-form-input v-model="form.points" placeholder="Enter Points" required></b-form-input>
-          <p class="error" v-if="errors.points">{{ errors.points[0] }}</p>
-        </b-form-group>
-        <b-form-group label="Level:" description="Enter a level between 7 and 10" class="col-md-5">
-          <b-form-input v-model="form.level"  placeholder="Enter Level" required></b-form-input>
-          <p class="error" v-if="errors.level">{{ errors.level[0] }}</p>
-        </b-form-group>
+  <v-container align-center cols="12" md="8" class="margin-top">
+  <v-card cols="10" md="10">
+        <v-card-title class="blue lighten-5 mb-2"><h2 class="font-weight-light">Edit Course</h2></v-card-title>
+<v-form>
+  <v-container>
 
-      </div>
-      <a class="btn btn-success" @click="editCourse()">Submit</a>
-    </b-form>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.title" :counter="30" label="Title" :error-messages="errors.title" required></v-text-field>
 
-  </div>
+      </v-col>
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.code" label="Code" :counter="5" :error-messages="errors.code" required></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="10">
+        <v-textarea v-model="form.description" color="blue darken-3" :error-messages="errors.description">
+          <template v-slot:label>
+            <div>
+              Description
+            </div>
+          </template>
+        </v-textarea>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.points" :counter="3" label="Points" :error-messages="errors.points" required></v-text-field>
+      </v-col>
+
+      <v-col cols="12" md="6">
+        <v-text-field v-model="form.level" label="Level" :error-messages="errors.level" required></v-text-field>
+      </v-col>
+    </v-row>
+    <v-btn color="purple darken-3"  class="white--text margin-r"><a @click="editCourse()">Submit</a></v-btn>
+    <v-btn outlined color="grey darken-2" :to="{ name: 'courses_index' }"><a >Back</a></v-btn>
+  </v-container>
+</v-form>
+</v-card>
+</v-container>
 </template>
 
 <script>
@@ -64,7 +71,7 @@ export default {
     getCourse() {
       let token = localStorage.getItem('token');
 
-      axios.get(`http://college.api:8000/api/courses/${this.$route.params.id}`, {
+      axios.get(`https://college-api-cob.herokuapp.com/api/courses/${this.$route.params.id}`, {
         headers: { Authorization: "Bearer " + token}
       })
       .then(response => {
@@ -86,7 +93,7 @@ export default {
       let token = localStorage.getItem('token');
 
 
-      axios.put(`http://college.api:8000/api/courses/${this.$route.params.id}`, {
+      axios.put(`https://college-api-cob.herokuapp.com/api/courses/${this.$route.params.id}`, {
         title: this.form.title,
         code: this.form.code,
         description: this.form.description,

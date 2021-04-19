@@ -2,16 +2,17 @@
 <div>
     <v-col cols="12" sm="8" md="10">
   <v-card container>
-    <v-card-title><h3>{{ course.title }}</h3></v-card-title>
-    <v-card-text>  <h4>Code: </h4> {{ course.code }}<br>
-      <h4>Description: </h4> {{ course.description }}<br>
-      <h4>Points: </h4> {{ course.points }}<br>
-      <h4>Level: </h4> {{ course.level }}<br></v-card-text>
+    <v-card-title class="blue lighten-5 mb-2"><h2 class="font-weight-light">{{ course.title }}</h2></v-card-title>
+    <v-card-text cols="6" sm="6" md="6">
+      <h4 class="font-weight-regular text--primary">Code: </h4> <p>{{ course.code }}</p>
+        <h4 class="font-weight-regular text--primary">Description: </h4> <p>{{ course.description }}</p>
+      <h4 class="font-weight-regular text--primary">Points: </h4> <p>{{ course.points }}<p>
+      <h4 class="font-weight-regular text--primary">Level: </h4> {{ course.level }}<br></v-card-text>
 
       <v-btn icon plain color="orange darken-3" :to="{ name: 'courses_edit', params: { id: course.id }}"><span class="material-icons" color="orange">
           edit
         </span></v-btn>
-      <v-btn icon plain color="red darken-2" @click="deleteEnrolment(course, course.id)"><span class="material-icons">
+      <v-btn icon plain color="red darken-2" @click="deleteCourse(course, course.id)"><span class="material-icons">
     delete
     </span></v-btn>
       <v-btn plain>
@@ -25,7 +26,7 @@
 
   <v-col>
     <v-card>
-      <v-card-title><h3>Enrolments in: {{ course.title }}</h3></v-card-title>
+      <v-card-title class="blue lighten-5"><h3 class="font-weight-light">Enrolments in: {{ course.title }}</h3></v-card-title>
       <v-data-table :headers="headers" :items="course.enrolments" :items-per-page="10" class="elevation-1">
         <template v-slot:[`item.actions`]="{ item }">
           <v-btn icon plain color="orange darken-3" :to="{ name: 'enrolments_edit', params: { id: item.id }}"><span class="material-icons" color="orange">
@@ -93,7 +94,7 @@ export default {
   mounted() {
     let token = localStorage.getItem('token');
 
-    axios.get(`http://college.api:8000/api/courses/${this.$route.params.id}`, {
+    axios.get(`https://college-api-cob.herokuapp.com/api/courses/${this.$route.params.id}`, {
         headers: {
           Authorization: "Bearer " + token
         }
@@ -112,7 +113,7 @@ export default {
     deleteEnrolment(enrolments, id) {
       let token = localStorage.getItem('token');
       console.log(id);
-      axios.delete(`http://college.api:8000/api/enrolments/${id}`, {
+      axios.delete(`https://college-api-cob.herokuapp.com/api/enrolments/${id}`, {
           headers: {
             Authorization: "Bearer " + token
           }

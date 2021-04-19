@@ -1,5 +1,5 @@
 import Vue from 'vue'
-//import Vuelidate from 'vuelidate'
+import moment from 'moment'
 import Vuetify from 'vuetify'
 import vuetify from './plugins/vuetify' // path to vuetify export
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
@@ -17,5 +17,6 @@ Vue.config.productionTip = false
 new Vue({
   router,
   vuetify,
+  moment,
   render: h => h(App),
 }).$mount('#app')

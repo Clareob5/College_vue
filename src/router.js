@@ -1,16 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home'
-import Login from './views/Auth/Login'
-import Register from './views/Auth/Register'
+///////////////Courses/////////////////////
 import CoursesIndex from './views/courses/Index'
 import CoursesShow from './views/courses/Show'
 import CoursesEdit from './views/courses/Edit'
 import CoursesCreate from './views/courses/Create'
+///////////////Lecturers/////////////////////
 import EnrolmentsIndex from './views/enrolments/Index'
 import EnrolmentsShow from './views/enrolments/Show'
 import EnrolmentsEdit from './views/enrolments/Edit'
 import EnrolmentsCreate from './views/enrolments/Create'
+///////////////Lecturers/////////////////////
 import LecturersIndex from './views/lecturers/Index'
 import LecturersShow from './views/lecturers/Show'
 import LecturersEdit from './views/lecturers/Edit'
@@ -26,23 +27,8 @@ export default new Router({
       path: '/',
       name: 'home',
       component: Home,
-      children: [
 
-      ]
     },
-
-    {
-      path: '/Auth/Login',
-      name: 'login',
-      component: Login
-    },
-
-    {
-      path: '/Auth/Register',
-      name: 'register',
-      component: Register
-    },
-
     {
       path: '/courses',
       name: 'courses_index',
