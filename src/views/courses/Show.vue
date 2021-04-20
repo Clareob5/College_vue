@@ -97,7 +97,7 @@
 </template>
 
 <script>
-//inport the axios library
+//import the axios library
 import axios from 'axios'
 
 export default {
@@ -145,11 +145,13 @@ export default {
     }
   },
   mounted() {
-    //getting teh course on page load
+    //getting the course on page load
     let token = localStorage.getItem('token');
     //using a get request to api to retrive course
     axios.get(`https://college-api-cob.herokuapp.com/api/courses/${this.$route.params.id}`, {
         headers: {
+          //attaching the token to the request
+          //request wont go through if not logged it 
           Authorization: "Bearer " + token
         }
       })

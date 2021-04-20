@@ -152,7 +152,7 @@ export default {
         .then(function(response) {
           console.log(response);
           localStorage.setItem('token', response.data.token);
-          self.$emit('login'); // <-- this is the new line
+          self.$emit('login');
           self.$router.replace({
             name: 'home'
           });

@@ -102,20 +102,12 @@ export default {
       deleteDialog: false,
     }
   },
-  // watch: {
-  //   term: function() {
-  //   this.searchLecturer();
-  //   }
-  //},
   mounted() {
     this.getLecturers();
-    //this.getEnrolments();
   },
   methods: {
     getLecturers() {
       let token = localStorage.getItem('token');
-
-      //console.log(token);
 
       axios.get('https://college-api-cob.herokuapp.com/api/lecturers', {
           headers: {

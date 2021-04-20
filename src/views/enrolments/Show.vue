@@ -59,34 +59,42 @@
 </template>
 
 <script>
+//import the axios library
 import axios from 'axios'
 
 export default {
+  //component name
   name: 'EnrolmentShow',
   props: {
-    loggedIn: Boolean //<-- this is new line
+    loggedIn: Boolean
   },
   components: {
 
   },
   data() {
     return {
+      // return object of enrolment and the relevant course and lecturer
       enrolment: {},
       course: {},
       lecturer: {},
-      deleteEnrolDialog: false
+      deleteEnrolDialog: false //setting dialog to false
     }
   },
   mounted() {
+    //getting the enrolment on page load
     let token = localStorage.getItem('token');
 
+    //using a get request to api to retrive course this is retriving it from the hosted version of the API
     axios.get(`https://college-api-cob.herokuapp.com/api/enrolments/${this.$route.params.id}`, {
         headers: {
+          //attaching the token to the request
+          //request wont go through if not logged it
           Authorization: "Bearer " + token
         }
       })
       .then(response => {
         console.log(response.data.data);
+        //returns the data from db
         this.enrolment = response.data.data;
         this.getCourse(response.data.data);
         this.getLecturer(response.data.data);
@@ -94,15 +102,16 @@ export default {
       })
       .catch(error => {
         console.log(error)
+        //logs any errors to console
         console.log(error.response.data)
       })
 
-
-
   },
   methods: {
+    //gets course related to the enrolment
     getCourse(enrole) {
       let token = localStorage.getItem('token');
+
       console.log(enrole.course_id);
 
       axios.get(`https://college-api-cob.herokuapp.com/api/courses/${this.enrolment.course_id}`, {
@@ -119,6 +128,7 @@ export default {
           console.log(error.response.data)
         })
     },
+    //get the lecturer relevant
     getLecturer(enrole) {
       let token = localStorage.getItem('token');
       console.log(enrole.lecturer_id);
@@ -136,10 +146,12 @@ export default {
           console.log(error.response.data)
         })
     },
+    //deletes the enrolment
     deleteEnrolment(enrolments, id) {
       let token = localStorage.getItem('token');
-      this.deleteEnrolDialog = false;
+      this.deleteEnrolDialog = false; //sets dialog to false which disabled the dialog
 
+      //axios send a deltet request to delete the enrolment
       axios.delete(`https://college-api-cob.herokuapp.com/api/enrolments/${id}`, {
           headers: {
             Authorization: "Bearer " + token
@@ -148,6 +160,7 @@ export default {
         })
         .then((response) => {
           console.log(response);
+          //reforedts to enrolments page usinf the router
           this.$router.replace({ name: 'enrolments_index' });
         })
         .catch(function(error) {

@@ -7,10 +7,10 @@
   <v-card>
     <v-card-title>
       <v-btn color="blue accent-4" dark class="mb-2">
-
         <router-link class="routerlink" :to="{ name: 'enrolments_create' }">Add Enrolment</router-link>
       </v-btn>
       <v-spacer></v-spacer>
+      <!-- the search bar witha v-model to connect to the data table so it searchs the table -->
       <v-text-field cols="6" v-model="search" append-icon="search" label="Search" single-line hide-details></v-text-field>
     </v-card-title>
     <v-data-table :headers="headers" :items="enrolments" :search="search" :items-per-page="10" loading="loadTable" loading-text="Loading... Please wait" class="elevation-1">
@@ -41,21 +41,23 @@
           </v-dialog>
            <!-- end of dialog -->
         <v-btn icon plain>
+          <!-- link to view enrolment using material icons from an imported library -->
           <router-link :to="{ name: 'enrolments_show', params: { id: item.id }}"><span class="material-icons" color="blue">
               visibility
             </span></router-link>
         </v-btn>
       </template>
-
     </v-data-table>
   </v-card>
 </v-col>
 </template>
 
 <script>
+//import axios
 import axios from 'axios'
 
 export default {
+  //component name
   name: 'EnrolmentIndex',
   components: {
 
@@ -64,28 +66,28 @@ export default {
     return {
       enrolments: [],
       headers: [{
-          text: 'Date',
-          value: 'date',
+          text: 'Date', //header text
+          value: 'date', //value from the database
           key: 'date',
-          sortable: true,
+          sortable: true, //this column can be sorted
         },
         {
           label: 'Time',
-          text: 'time',
+          text: 'Time',
           value: 'time',
           key: 'time',
           sortable: true,
         },
         {
           label: 'Status',
-          text: 'status',
+          text: 'Status',
           value: 'status',
           key: 'status',
           sortable: true,
         },
         {
           label: 'Course',
-          text: 'course',
+          text: 'Course',
           value: 'course.title',
           key: 'course.title',
           sortable: true,
@@ -99,21 +101,22 @@ export default {
         },
         {
           label: 'Actions',
-          text: 'actions',
+          text: 'Actions',
           value: 'actions',
           sortable: true,
         },
 
       ],
       perPage: 50,
-      loadTable: false,
+      loadTable: false, //sets the table boolean to false
       currentPage: 1,
       rows: 100,
       lecturers: [],
       search: "",
-      deleteEnrolDialog: false
+      deleteEnrolDialog: false //sets the dialog to false on render
     }
   },
+  //not needed asthe datatable has a search prop
   // watch: {
   //   term: function() {
   //     this.searchEnrolment();
@@ -121,7 +124,6 @@ export default {
   // },
   mounted() {
     this.getEnrolments();
-    this.getLecturers();
   },
   methods: {
     getEnrolments() {
@@ -136,25 +138,6 @@ export default {
           console.log(response.data.data);
           this.enrolments = response.data.data;
           this.loadTable = false;
-        })
-        .catch(error => {
-          console.log(error)
-          console.log(error.response.data)
-        })
-    },
-    getLecturers() {
-      let token = localStorage.getItem('token');
-
-      //console.log(token);
-
-      axios.get('https://college-api-cob.herokuapp.com/api/lecturers', {
-          headers: {
-            Authorization: "Bearer " + token
-          }
-        })
-        .then(response => {
-          console.log(response.data.data);
-          this.lecturers = response.data.data;
         })
         .catch(error => {
           console.log(error)
@@ -183,27 +166,6 @@ export default {
           console.log(error)
         })
     },
-    logout() {
-      let token = localStorage.getItem('token');
-
-      axios.get('https://college-api-cob.herokuapp.com/api/logout', {
-          headers: {
-            Authorization: "Bearer " + token
-          }
-        })
-        .then(response => {
-          console.log(response.data);
-          console.log("LOGGED OUT");
-
-        })
-        .catch(error => {
-          console.log(error)
-          console.log(error.response.data)
-        })
-      localStorage.removeItem('token');
-
-
-    }
   }
 }
 </script>

@@ -96,6 +96,7 @@ export default {
     }
   },
   computed: {
+    //method from moment.js to compute date to desired output
     computedDateFormattedMomentjs() {
       return this.form.date ? moment(this.date).format('dddd, MMMM Do YYYY') : ''
     },
@@ -106,6 +107,7 @@ export default {
     this.getLecturers();
   },
   methods: {
+    //retrieving enrolment
     getEnrolment() {
       let token = localStorage.getItem('token');
 
@@ -114,6 +116,7 @@ export default {
       })
       .then(response => {
         console.log(response.data);
+        //returns all the data to display in edit form
         this.form.date = response.data.data.date;
         this.form.time = response.data.data.time;
         this.form.status = response.data.data.status;
@@ -128,10 +131,11 @@ export default {
         console.log(error.response.data)
       })
     },
+    //update the enrolment method
     editEnrolment() {
       let token = localStorage.getItem('token');
 
-
+      //using axios to send the request
       axios.put(`https://college-api-cob.herokuapp.com/api/enrolments/${this.$route.params.id}`, {
         date: this.form.date,
         time: this.form.time,
@@ -144,20 +148,22 @@ export default {
       })
       .then(response => {
         console.log(response.data);
+        //redirecting to enrolments index
         this.$router.push({ name: 'enrolments_index' });
       })
       .catch(error => {
         console.log(error)
         console.log(error.response.data)
         if (error.response.data.errors) {
+          //setting the errors object to have the errors from the db
           this.errors = error.response.data.errors
         }
       })
     },
+    //get coures for droupdown
   getCourses() {
+    //setting the log in token as a variable
     let token = localStorage.getItem('token');
-
-    //console.log(token);
 
     axios.get('https://college-api-cob.herokuapp.com/api/courses', {
         headers: {
@@ -167,7 +173,6 @@ export default {
       .then(response => {
         console.log(response.data.data);
         this.courses = response.data.data;
-        this.filteredCourses = this.courses;
       })
       .catch(error => {
         console.log(error)
@@ -176,8 +181,6 @@ export default {
   },
   getLecturers() {
     let token = localStorage.getItem('token');
-
-    //console.log(token);
 
     axios.get('https://college-api-cob.herokuapp.com/api/lecturers', {
         headers: {

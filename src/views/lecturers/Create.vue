@@ -31,32 +31,6 @@
 </v-form>
 </v-card>
 </v-container>
-<!-- <div class="container">
-  <b-form class="col-md-10">
-    <div class="row">
-      <b-form-group label="Name:" class="col-md-5">
-        <b-form-input v-model="form.name" placeholder="Enter name" required></b-form-input>
-        <p class="error" v-if="errors.name">{{ errors.name[0] }}</p>
-      </b-form-group>
-      <b-form-group label="Address:" class="col-md-5">
-        <b-form-textarea v-model="form.address" placeholder="Enter address" required></b-form-textarea>
-        <p class="error" v-if="errors.address">{{ errors.address[0] }}</p>
-      </b-form-group>
-    </div>
-    <div class="row">
-      <b-form-group label="Email:" class="col-md-5">
-        <b-form-input v-model="form.email" placeholder="Enter email" required></b-form-input>
-        <p class="error" v-if="errors.email">{{ errors.email[0] }}</p>
-      </b-form-group>
-      <b-form-group label="Phone Number:" class="col-md-5">
-        <b-form-input v-model="form.phone" placeholder="Enter Phone" required></b-form-input>
-        <p class="error" v-if="errors.phone">{{ errors.phone[0] }}</p>
-      </b-form-group>
-    </div>
-    <a class="btn btn-success" @click="createLecturer()">Submit</a>
-  </b-form>
-
-</div> -->
 </template>
 
 <script>
