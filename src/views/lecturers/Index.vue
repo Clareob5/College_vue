@@ -147,6 +147,7 @@ export default {
       let token = localStorage.getItem('token');
       console.log(this.deleteDialog);
       this.deleteDialog = false;
+      let is = this; //needed to change because undefined error
 
       let listOfDeleteRequests = lecturer.enrolments.map((current) => axios.delete('https://college-api-cob.herokuapp.com/api/enrolments/' + current.id, {
         headers: {
@@ -155,7 +156,7 @@ export default {
       }));
       // log the contents of listOfDeleteRequests
       axios.all(listOfDeleteRequests)
-        .then(function(response) {
+        .then((response) => {
           console.log(response);
           axios.delete("https://college-api-cob.herokuapp.com/api/lecturers/" + lecturer.id, {
               headers: {
@@ -164,8 +165,8 @@ export default {
             })
             .then((response) => {
               console.log(response);
-              //console.log(id);
-              this.getLecturers();
+              //used instead of this.getLecturers() as it is was sened undefined error
+              is.getLecturers();
 
             })
             .catch(function(error) {
