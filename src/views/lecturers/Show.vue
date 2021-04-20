@@ -17,9 +17,41 @@
       <v-btn icon plain color="orange darken-3" :to="{ name: 'lecturers_edit', params: { id: lecturer.id }}"><span class="material-icons" color="orange">
           edit
         </span></v-btn>
-      <v-btn icon plain color="red darken-2" @click="deleteLecturer(lecturer)"><span class="material-icons">
-          delete
-        </span></v-btn>
+        <v-dialog
+          v-model="deleteLecturerDialog"
+          persistent
+          max-width="310"
+          :retain-focus="false"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn icon plain  v-bind="attrs"
+             v-on="on" color="red darken-2" @click="deleteLecturerDialog"><span class="material-icons">delete</span>
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-title class="headline">
+              Are you sure you wish to delete this Lecturer
+            </v-card-title>
+            <v-card-text>This Lecturer may have enrolments, these will be deleted if you delete the Lecturer</v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="red darken-1"
+                text
+                @click="deleteLecturerDialog = false"
+              >
+               cancel
+              </v-btn>
+              <v-btn
+                color="red darken-1"
+                text
+                @click="deleteLecturer(lecturer)"
+              >
+                confirm
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       <v-btn plain>
         <router-link :to="{ name: 'lecturers_index' }">
           Back
@@ -39,9 +71,40 @@
           <v-btn icon plain color="orange darken-3" :to="{ name: 'enrolments_edit', params: { id: item.id }}"><span class="material-icons" color="orange">
               edit
             </span></v-btn>
-          <v-btn icon plain color="red darken-2" @click="deleteEnrolment(item, item.id)"><span class="material-icons">
-              delete
-            </span></v-btn>
+            <v-dialog
+              v-model="deleteEnrolDialog"
+              persistent
+              max-width="310"
+              :retain-focus="false"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon plain  v-bind="attrs"
+                 v-on="on" color="red darken-2" @click="deleteEnrolDialog"><span class="material-icons">delete</span>
+                </v-btn>
+              </template>
+              <v-card>
+                <v-card-title class="headline">
+                  Are you sure you wish to delete this Enrolment
+                </v-card-title>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    color="red darken-1"
+                    text
+                    @click="deleteEnrolDialog = false"
+                  >
+                   cancel
+                  </v-btn>
+                  <v-btn
+                    color="red darken-1"
+                    text
+                    @click="deleteEnrolment(item, item.id)"
+                  >
+                    confirm
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
           <v-btn icon plain>
             <router-link :to="{ name: 'enrolments_show', params: { id: item.id }}"><span class="material-icons" color="blue">
                 visibility
@@ -96,6 +159,8 @@ export default {
           value: 'actions'
         },
       ],
+      deleteEnrolDialog: false,
+      deleteLecturerDialog: false
     }
   },
   mounted() {
@@ -115,13 +180,13 @@ export default {
         console.log(error)
         console.log(error.response.data)
       })
+    this.getEnrolments();
   },
   methods: {
     deleteLecturer(lecturer) {
       let token = localStorage.getItem('token');
-      console.log(this.deleteDialog);
-      this.deleteDialog = false;
-
+      this.deleteLecturerDialog = false;
+      let is = this;
       let listOfDeleteRequests = lecturer.enrolments.map((current) => axios.delete('https://college-api-cob.herokuapp.com/api/enrolments/' + current.id, {
         headers: {
           Authorization: "Bearer " + token
@@ -136,9 +201,9 @@ export default {
                 Authorization: "Bearer " + token
               }
             })
-            .then(function(response) {
+            .then((response) => {
               console.log(response);
-
+              is.$router.replace({ name: 'lecturers_index' });
             })
             .catch(function(error) {
               console.log(error);
@@ -147,9 +212,7 @@ export default {
     },
     deleteEnrolment(enrolments, id) {
       let token = localStorage.getItem('token');
-      const enrole = this.enrolments.indexOf(id);
-      console.log('Enrole' + enrole);
-      //this.enrolments.splice(enrole, 1);
+      this.deleteEnrolDialog = false;
 
       axios.delete(`https://college-api-cob.herokuapp.com/api/enrolments/${id}`, {
           headers: {
@@ -157,26 +220,33 @@ export default {
           }
 
         })
-        .then(function(response) {
+        .then((response) => {
           console.log(response);
-          //console.log(id);
-          //this.getEnrolments();
-          //this.$router.push({ name: 'enrolments_index' });
+          this.getEnrolments();
 
         })
         .catch(function(error) {
           console.log(error)
         })
 
-      // console.log(id)
-      // const enrolment = this.enrolments.indexOf(id);
-      // console.log(enrolment);
-      // this.enrolments.splice(enrolment, 1);
-      // localStorage.removeItem(enrolment);
+    },
+    getEnrolments() {
+      let token = localStorage.getItem('token');
 
-      // axios.delete(`https://college-api-cob.herokuapp.com/api/enrolments/${id}`).then(()=>{
-      //   //this.getData;
-      // })
+      axios.get('https://college-api-cob.herokuapp.com/api/enrolments', {
+          headers: {
+            Authorization: "Bearer " + token
+          }
+        })
+        .then(response => {
+          console.log(response.data.data);
+          this.enrolments = response.data.data;
+          this.loadTable = false;
+        })
+        .catch(error => {
+          console.log(error)
+          console.log(error.response.data)
+        })
     },
   },
 }

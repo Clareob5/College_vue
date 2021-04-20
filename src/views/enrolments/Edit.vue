@@ -6,24 +6,30 @@
       <v-form>
         <v-container>
           <v-row>
-              <v-col cols="12" md="6">
+              <!-- the date picker component from vuetify to choose a date from a calender -->
+          <v-col cols="12" md="6">
           <v-menu v-model="menu1" :close-on-content-click="false" max-width="290">
             <template v-slot:activator="{ on, attrs }">
+              <!-- value = to the computed data gotten by using moment.js -->
               <v-text-field v-model="form.date" :value="computedDateFormattedMomentjs" clearable label="Enter Date" readonly v-bind="attrs" v-on="on" :error-messages="errors.date"></v-text-field>
             </template>
+              <!-- once the date is selected the calender(menu) is disabled -->
             <v-date-picker v-model="form.date" @change="menu1 = false"></v-date-picker>
           </v-menu>
         </v-col>
             <v-col cols="12" md="6">
+                <!-- time picker component with clock menu -->
               <v-menu ref="menu" v-model="menu2" :close-on-content-click="false" :return-value.sync="time" transition="scale-transition" max-width="290px" min-width="290px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field v-model="form.time" label="Enter Time" prepend-icon="mdi-clock-time-four-outline" readonly v-bind="attrs" v-on="on" :error-messages="errors.time"></v-text-field>
                 </template>
+                <!-- saves the time -->
                 <v-time-picker v-if="menu2" v-model="form.time" full-width @click:minute="$refs.menu.save(time)"></v-time-picker>
               </v-menu>
             </v-col>
             </v-row>
           <div class="row">
+            <!-- Bootstrap vue radio buttons - within vuetify form -->
             <b-form-group label="Status" class="col-md-12">
               <b-form-radio-group
                 v-model="form.status"
@@ -37,18 +43,19 @@
               <p v-if="errors.status" class="errors">{{ errors.status[0] }}</p>
             </b-form-group>
           </div>
+          <!-- dropdowns to select lecturer and course respectively -->
           <v-row>
           <v-col class="d-flex" cols="12" sm="6">
             <v-select :items="lecturers" label="Select Lecturer" v-model="form.lecturer.id" item-value="id" item-text="name" :error-messages="errors.lecturer_id"></v-select>
           </v-col>
           <v-col class="d-flex" cols="12" sm="6">
-            <v-select :items="courses" label="Select Course" v-model="form.course" item-value="id" item-text="title" :error-messages="errors.course_id"></v-select>
+            <v-select :items="courses" label="Select Course" v-model="form.course.id" item-value="id" item-text="title" :error-messages="errors.course_id"></v-select>
           </v-col>
         </v-row>
-        <v-row>
+
           <v-btn color="purple darken-3"  class="white--text margin-r"><a @click="editEnrolment()">Submit</a></v-btn>
           <v-btn outlined color="grey darken-2" :to="{ name: 'enrolments_index' }" class="margin">Back</v-btn>
-        </v-row>
+
         </v-container>
       </v-form>
     </v-card>
@@ -56,25 +63,23 @@
 </template>
 
 <script>
+// importing the axios library and the moment.js library
 import axios from 'axios';
-import moment from 'moment';
+import moment from 'moment'; //used to format the date in the form
 
 export default {
   name: 'EnrolmentEdit',
   props: {
-  loggedIn: Boolean //<-- this is new line
+  loggedIn: Boolean
   },
   components: {
 
   },
   data() {
     return {
-      time: null,
-      menu2: false,
-      modal2: false,
       form: {
-        date: null,
-        time: null,
+        date: null, //set to null as the date picker requires it be null
+        time: null, //set to null as the time picker requires it be null
         status: "",
         course: "",
         lecturer: ""
@@ -83,8 +88,10 @@ export default {
       errors: {},
       lecturers: [],
       courses: [],
-      menu1: false,
-      // filteredEnrolments: [],
+      menu1: false, //date menu
+      menu2: false, //time menu
+      modal2: false
+
 
     }
   },

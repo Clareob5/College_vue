@@ -18,9 +18,28 @@
         <v-btn icon plain color="orange darken-3" :to="{ name: 'enrolments_edit', params: { id: item.id }}"><span class="material-icons" color="orange">
             edit
           </span></v-btn>
-        <v-btn icon plain color="red darken-2" @click="deleteEnrolment(item, item.id)"><span class="material-icons">
-            delete
-          </span></v-btn>
+          <!-- dialog for enrolments delete -->
+          <v-dialog v-model="deleteEnrolDialog" persistent max-width="310" :retain-focus="false">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon plain v-bind="attrs" v-on="on" color="red darken-2" @click="deleteEnrolDialog"><span class="material-icons">delete</span>
+              </v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="headline">
+                Are you sure you wish to delete this Enrolment?
+              </v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red darken-1" text @click="deleteEnrolDialog = false">
+                  cancel
+                </v-btn>
+                <v-btn color="red darken-1" text @click="deleteEnrolment(item, item.id)">
+                  confirm
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+           <!-- end of dialog -->
         <v-btn icon plain>
           <router-link :to="{ name: 'enrolments_show', params: { id: item.id }}"><span class="material-icons" color="blue">
               visibility
@@ -92,9 +111,7 @@ export default {
       rows: 100,
       lecturers: [],
       search: "",
-      filteredEnrolments: [],
-      selectedEnrolment: "",
-      selectedLecturer: ""
+      deleteEnrolDialog: false
     }
   },
   // watch: {
@@ -144,12 +161,13 @@ export default {
           console.log(error.response.data)
         })
     },
-    deleteEnrolment(enrolments, id) {
-      // const enrole = this.enrolments.indexOf(id);
-      // console.log('Enrole' + enrole);
-      // this.enrolments.splice(enrole, 1);
-      let token = localStorage.getItem('token');
 
+    deleteEnrolment(enrolments, id) {
+
+      let token = localStorage.getItem('token');
+      let is = this;
+      //setting the dialog to false
+      this.deleteEnrolDialog = false;
       axios.delete(`https://college-api-cob.herokuapp.com/api/enrolments/${id}`, {
           headers: {
             Authorization: "Bearer " + token
@@ -159,21 +177,11 @@ export default {
         .then((response) => {
           console.log(response);
           //console.log(id);
-          this.getEnrolments();
+          is.getEnrolments();
         })
         .catch(function(error) {
           console.log(error)
         })
-
-      // // console.log(id)
-      // const enrolment = this.enrolments.indexOf(id);
-      // console.log(enrolment);
-      // this.enrolments.splice(enrolment, 1);
-      // localStorage.removeItem(enrolment);
-
-      // axios.delete(`https://college-api-cob.herokuapp.com/api/enrolments/${id}`).then(()=>{
-      //   //this.getData;
-      // })
     },
     logout() {
       let token = localStorage.getItem('token');
